@@ -219,14 +219,17 @@ $$('.nav__links a').forEach((a) => {
 gsap.to('.marquee__track', { xPercent: -50, ease: 'none', duration: 28, repeat: -1 });
 ScrollTrigger.create({ trigger: '.marquee', start: 'top bottom', end: 'bottom top', onUpdate: (s) => gsap.to('.marquee__track', { skewX: gsap.utils.clamp(-8, 8, s.getVelocity() / -300), duration: .4, overwrite: 'auto' }) });
 
-// manifesto: words light up with scroll
-const ms = new SplitText('#manifesto', { type: 'words', wordsClass: 'w' });
-gsap.to(ms.words, { opacity: 1, stagger: .1, ease: 'none', scrollTrigger: { trigger: '.manifesto', start: 'top 75%', end: 'bottom 45%', scrub: true } });
-
-// section titles: masked line reveal
-$$('.sec-title').forEach((h) => {
-  const s = new SplitText(h.querySelectorAll('.split'), { type: 'chars' });
-  gsap.from(s.chars, { yPercent: 110, autoAlpha: 0, rotate: 4, stagger: .02, duration: 1.1, ease: 'expo.out', scrollTrigger: { trigger: h, start: 'top 85%' } });
+// split text only once the display fonts are in, so the measured lines are right
+document.fonts.ready.then(() => {
+  // manifesto: words light up with scroll
+  const ms = new SplitText('#manifesto', { type: 'words', wordsClass: 'w' });
+  gsap.to(ms.words, { opacity: 1, stagger: .1, ease: 'none', scrollTrigger: { trigger: '.manifesto', start: 'top 75%', end: 'bottom 45%', scrub: true } });
+  // section titles: masked line reveal
+  $$('.sec-title').forEach((h) => {
+    const s = new SplitText(h.querySelectorAll('.split'), { type: 'chars' });
+    gsap.from(s.chars, { yPercent: 110, autoAlpha: 0, rotate: 4, stagger: .02, duration: 1.1, ease: 'expo.out', scrollTrigger: { trigger: h, start: 'top 85%' } });
+  });
+  ScrollTrigger.refresh();
 });
 
 // cards & images rise
@@ -255,6 +258,148 @@ const vio = new IntersectionObserver((es) => es.forEach(({ target: v, isIntersec
   if (isIntersecting) { if (!v.src) v.src = v.dataset.src; v.play().catch(() => {}); } else v.pause();
 }), { threshold: .25 });
 $$('video[data-src]').forEach((v) => vio.observe(v));
+
+/* ---------------- volumetric smoke that rolls over the screen on the way into the menu
+   3D simplex fbm with domain warping, fake self-shadowing toward a light, rises with scroll,
+   curls harder with scroll speed and parts around the cursor. Rendered at reduced resolution. */
+const SMOKE_FS = `
+  precision highp float; varying vec2 vUv;
+  uniform vec2 uRes, uMouse; uniform float uTime, uEnter, uExit, uThick, uRise, uVel;
+  vec3 mod289(vec3 x){ return x - floor(x * (1. / 289.)) * 289.; }
+  vec4 mod289(vec4 x){ return x - floor(x * (1. / 289.)) * 289.; }
+  vec4 permute(vec4 x){ return mod289(((x * 34.) + 1.) * x); }
+  vec4 taylorInvSqrt(vec4 r){ return 1.79284291400159 - .85373472095314 * r; }
+  float snoise(vec3 v){
+    const vec2 C = vec2(1. / 6., 1. / 3.); const vec4 D = vec4(0., .5, 1., 2.);
+    vec3 i = floor(v + dot(v, C.yyy)); vec3 x0 = v - i + dot(i, C.xxx);
+    vec3 g = step(x0.yzx, x0.xyz); vec3 l = 1. - g; vec3 i1 = min(g.xyz, l.zxy); vec3 i2 = max(g.xyz, l.zxy);
+    vec3 x1 = x0 - i1 + C.xxx; vec3 x2 = x0 - i2 + C.yyy; vec3 x3 = x0 - D.yyy;
+    i = mod289(i);
+    vec4 p = permute(permute(permute(i.z + vec4(0., i1.z, i2.z, 1.)) + i.y + vec4(0., i1.y, i2.y, 1.)) + i.x + vec4(0., i1.x, i2.x, 1.));
+    float n_ = .142857142857; vec3 ns = n_ * D.wyz - D.xzx;
+    vec4 j = p - 49. * floor(p * ns.z * ns.z);
+    vec4 x_ = floor(j * ns.z); vec4 y_ = floor(j - 7. * x_);
+    vec4 x = x_ * ns.x + ns.yyyy; vec4 y = y_ * ns.x + ns.yyyy; vec4 h = 1. - abs(x) - abs(y);
+    vec4 b0 = vec4(x.xy, y.xy); vec4 b1 = vec4(x.zw, y.zw);
+    vec4 s0 = floor(b0) * 2. + 1.; vec4 s1 = floor(b1) * 2. + 1.; vec4 sh = -step(h, vec4(0.));
+    vec4 a0 = b0.xzyw + s0.xzyw * sh.xxyy; vec4 a1 = b1.xzyw + s1.xzyw * sh.zzww;
+    vec3 p0 = vec3(a0.xy, h.x); vec3 p1 = vec3(a0.zw, h.y); vec3 p2 = vec3(a1.xy, h.z); vec3 p3 = vec3(a1.zw, h.w);
+    vec4 nm = taylorInvSqrt(vec4(dot(p0, p0), dot(p1, p1), dot(p2, p2), dot(p3, p3)));
+    p0 *= nm.x; p1 *= nm.y; p2 *= nm.z; p3 *= nm.w;
+    vec4 m = max(.6 - vec4(dot(x0, x0), dot(x1, x1), dot(x2, x2), dot(x3, x3)), 0.); m = m * m;
+    return 42. * dot(m * m, vec4(dot(p0, x0), dot(p1, x1), dot(p2, x2), dot(p3, x3)));
+  }
+  float fbm(vec3 p){ float v = 0., a = .5; for (int i = 0; i < OCT; i++) { v += a * snoise(p); p = p * 2.03 + vec3(1.7, 9.2, 3.1); a *= .5; } return v; }
+  float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+  // one smoke layer: x = density (0..1), y = how lit it is (density falling off toward the light)
+  vec2 layer(vec2 sp, float t, float warpK){
+    vec3 q = vec3(sp, t);
+    vec2 w = vec2(fbm(q), fbm(q + vec3(5.2, 1.3, 2.8)));                   // domain warp = curling wisps
+    vec2 wp = sp + w * warpK;
+    float d = fbm(vec3(wp, t * 1.3)) * .5 + .5;
+    float dl = fbm(vec3(wp + vec2(-.05, .09), t * 1.3)) * .5 + .5;
+    return vec2(d, clamp((d - dl) * 2.4 + .5, 0., 1.));
+  }
+  vec3 shade(float dens, float lit){
+    vec3 c = mix(vec3(.06, .08, .19), vec3(.40, .46, .64), dens);          // shadowed navy core -> blue-grey body
+    return mix(c, vec3(.86, .90, 1.), lit * .42 * dens);                   // soft lit rims
+  }
+  void main(){
+    vec2 uv = vUv; float asp = uRes.x / uRes.y;
+    vec2 p = vec2((uv.x - .5) * asp, uv.y);
+    vec2 dm = p - vec2((uMouse.x - .5) * asp, uMouse.y);
+    p += dm * .35 * exp(-dot(dm, dm) * 16.);                              // smoke parts softly around the cursor
+    float t = uTime * .045, rise = uRise + uTime * .035;
+    vec2 back = layer(p * .72 + vec2(3.1, -rise * .6), t * .8, 1.15 + uVel);          // far, slow, big
+    vec2 front = layer(p * 1.2 + vec2(-1.7, -rise), t, .95 + uVel * 1.6);             // near, faster
+    float thr = .5 - uThick * .22;
+    float db = smoothstep(thr - .06, thr + .38, back.x);
+    float df = smoothstep(thr + .02, thr + .34, front.x);
+    float aB = db * .55, aF = pow(df, 1.25) * .88;
+    vec3 c = shade(df, front.y) * aF + shade(db, back.y) * .78 * aB * (1. - aF);       // front over back (premultiplied)
+    float a = aF + aB * (1. - aF);
+    float haze = uThick * .24;                                                         // thin fog between the billows
+    c += vec3(.10, .14, .30) * haze * (1. - a); a += haze * (1. - a);
+    float n = (front.x - .5) * .55;
+    float eL = mix(-.45, 1.3, uEnter), xL = mix(-.45, 1.3, uExit);
+    float mask = (1. - smoothstep(eL - .45, eL + .05, uv.y + n)) * smoothstep(xL - .45, xL + .05, uv.y + n);   // rolls in from below, clears upward
+    c *= mask; a *= mask;
+    c += vec3(.12, .26, .85) * pow(1. - uv.y, 2.) * .3 * a;                // neon glow from below
+    c += vec3(1., .78, .4) * pow(uv.y, 3.) * .05 * a;                      // warm spill from above
+    c += (hash(gl_FragCoord.xy + fract(uTime)) - .5) / 160.;               // dither, no banding
+    gl_FragColor = vec4(c, a);
+  }`;
+if (!reduce) {
+  const sCv = document.createElement('canvas');
+  sCv.className = 'smoke'; sCv.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(sCv);
+  let sr = null;
+  try { sr = new THREE.WebGLRenderer({ canvas: sCv, alpha: true, premultipliedAlpha: true, antialias: false, powerPreference: 'high-performance' }); } catch (e) {}
+  if (sr) {
+    sr.setClearColor(0x000000, 0);
+    sr.setPixelRatio(Math.min(devicePixelRatio, 1.5) * (isTouch ? .42 : .5));
+    const sU = { uTime: { value: 0 }, uRes: { value: new THREE.Vector2(1, 1) }, uMouse: { value: new THREE.Vector2(.5, .5) },
+      uEnter: { value: 0 }, uExit: { value: 0 }, uThick: { value: 0 }, uRise: { value: 0 }, uVel: { value: 0 } };
+    const sScene = new THREE.Scene(), sCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    const sMesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.ShaderMaterial({
+      uniforms: sU, defines: { OCT: 4 }, transparent: true, depthTest: false, depthWrite: false,
+      vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0., 1.); }`, fragmentShader: SMOKE_FS,
+    }));
+    sMesh.frustumCulled = false; sScene.add(sMesh);
+    const sResize = () => { sr.setSize(innerWidth, innerHeight, false); sU.uRes.value.set(innerWidth, innerHeight); };
+    addEventListener('resize', sResize); sResize();
+    let goal = 0, cur = 0, vel = 0, on = false;
+    ScrollTrigger.create({ trigger: '#the-menu', start: 'top 200%', end: 'top 0%',
+      onUpdate: (s) => { goal = s.progress; vel = Math.min(Math.abs(s.getVelocity()) / 2600, 1); },
+      onLeave: () => { goal = 1; }, onLeaveBack: () => { goal = 0; } });
+    const sClock = new THREE.Clock();
+    gsap.ticker.add(() => {
+      cur += (goal - cur) * (1 - Math.pow(.91, gsap.ticker.deltaRatio()));   // same easing speed at any frame rate
+      const active = cur > .004 && cur < .996;
+      if (active !== on) { on = active; sCv.classList.toggle('is-on', on); }
+      if (!on) return;
+      const ease = (x) => 1 - Math.pow(1 - x, 2);
+      sU.uEnter.value = ease(gsap.utils.clamp(0, 1, cur / .5));
+      sU.uExit.value = gsap.utils.clamp(0, 1, (cur - .48) / .4);
+      sU.uThick.value = Math.sin(Math.PI * cur);
+      sU.uRise.value = cur * 2.4;
+      sU.uVel.value += (vel - sU.uVel.value) * .05; vel *= .94;
+      sU.uTime.value = sClock.getElapsedTime();
+      sU.uMouse.value.lerp(target, .05);
+      sr.render(sScene, sCam);
+    });
+  }
+}
+
+/* ---------------- coffeeshop menu: category tabs (Flip), cursor spotlight on cards */
+const { Flip } = window;
+if (Flip) gsap.registerPlugin(Flip);
+const mcards = $$('#the-menu .mcard');
+const mtabs = $$('#the-menu .tabs button');
+mtabs.forEach((b) => b.addEventListener('click', () => {
+  const f = b.dataset.filter;
+  if (b.getAttribute('aria-selected') === 'true') return;
+  mtabs.forEach((x) => x.setAttribute('aria-selected', String(x === b)));
+  const state = Flip && !reduce ? Flip.getState(mcards) : null;
+  mcards.forEach((c) => { c.style.display = (f === 'all' || c.dataset.cat === f) ? '' : 'none'; });
+  const done = () => ScrollTrigger.refresh();
+  if (!state) return done();
+  Flip.from(state, {
+    duration: .75, ease: 'expo.out', absolute: true, onComplete: done,
+    onEnter: (els) => gsap.fromTo(els, { autoAlpha: 0, y: 40, scale: .96 }, { autoAlpha: 1, y: 0, scale: 1, duration: .8, ease: 'expo.out', stagger: .05 }),
+    onLeave: (els) => gsap.to(els, { autoAlpha: 0, scale: .94, duration: .35, ease: 'power2.in' }),
+  });
+  const top = $('#the-menu .tabs').getBoundingClientRect().top;     // keep the tabs in view after the list shrinks
+  if (top < 0 || top > innerHeight * .6) scrollToEl($('#the-menu .mboard'), -170);
+}));
+mcards.forEach((c) => c.addEventListener('pointermove', (e) => {
+  const r = c.getBoundingClientRect();
+  c.style.setProperty('--mx', (e.clientX - r.left) + 'px'); c.style.setProperty('--my', (e.clientY - r.top) + 'px');
+}));
+gsap.from('#the-menu .mnu__kicker, #the-menu .mnu__sub, #the-menu .tabs', { y: 40, autoAlpha: 0, duration: 1.1, ease: 'expo.out', stagger: .08, scrollTrigger: { trigger: '#the-menu', start: 'top 75%' } });
+gsap.from('.mcard--feat', { y: 80, autoAlpha: 0, duration: 1.3, ease: 'expo.out', scrollTrigger: { trigger: '.mcard--feat', start: 'top 88%' } });
+gsap.from('.mcard--feat tbody tr', { x: 40, autoAlpha: 0, duration: .9, ease: 'expo.out', stagger: .06, scrollTrigger: { trigger: '.mcard--feat', start: 'top 70%' } });
+gsap.from('#mgrid', { y: 80, autoAlpha: 0, duration: 1.3, ease: 'expo.out', scrollTrigger: { trigger: '#mgrid', start: 'top 90%' } });
 
 /* ---------------- Ladies Night: next date in Amsterdam time */
 (function nextLadies() {
