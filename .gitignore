@@ -1,0 +1,8 @@
+.vercel
+.env*
+node_modules
+# raw Instagram downloads and PNG originals (not used by the site)
+assets/ig
+assets/img/*.png
+# local backups
+*.bak.*

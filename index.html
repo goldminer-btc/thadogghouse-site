@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Tha Dogg House · Snoop Dogg's Flagship in Amsterdam</title>
+<meta name="description" content="Tha Dogg House — Snoop Dogg's flagship house in Amsterdam. Two locations, Marnixstraat 333 and Oudebrugsteeg 26. Merch, breakfast, DJ nights and the West Coast vibe.">
+<meta name="theme-color" content="#050B1F">
+<link rel="icon" href="assets/logo_a.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://tiles.basemaps.cartocdn.com" crossorigin>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="is-loading">
+
+<!-- age gate -->
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+  <div class="gate__inner">
+    <img class="gate__logo" src="assets/logo_a.png" alt="Tha Dogg House">
+    <h2 id="gate-title" class="gate__title">You must be 18 or older to enter.</h2>
+    <p class="gate__sub">Tha Dogg House is an adults-only house in Amsterdam.</p>
+    <div class="gate__actions">
+      <button class="btn btn--gold" id="gate-yes">I'm 18 or older</button>
+      <a class="btn btn--ghost" href="https://www.google.com" rel="nofollow">Leave</a>
+    </div>
+  </div>
+</div>
+
+<!-- loader -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader__logo"><i class="loader__dim"></i><i class="loader__fill" id="loader-fill"></i></div>
+  <div class="loader__meta"><span>Amsterdam</span><b id="loader-count">00</b></div>
+  <div class="loader__bar"><span id="loader-bar"></span></div>
+</div>
+
+<div class="cursor" id="cursor" aria-hidden="true"><span id="cursor-label"></span></div>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<header class="nav" id="nav">
+  <a href="#top" class="nav__logo" aria-label="Tha Dogg House — home"><img src="assets/logo_a.png" alt="Tha Dogg House"></a>
+  <nav class="nav__links" aria-label="Main">
+    <a href="#houses">The Houses</a><a href="#inside">Inside</a><a href="#nights">Nights</a><a href="#breakfast">Breakfast</a><a href="#gallery">Gallery</a><a href="#find">Find us</a>
+  </nav>
+  <button class="sound" id="sound" type="button" aria-pressed="false" aria-label="Turn sound on"><span class="sound__bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="sound__txt">Sound</span></button>
+  <a class="btn btn--gold btn--sm magnetic" href="https://thadogghouse.nl/shop/" target="_blank" rel="noopener">Shop merch</a>
+  <button class="nav__burger" id="burger" aria-label="Open menu" aria-expanded="false"><span></span><span></span></button>
+</header>
+<div class="menu" id="menu" aria-hidden="true">
+  <a href="#houses">The Houses</a><a href="#inside">Inside</a><a href="#nights">Nights</a><a href="#breakfast">Breakfast</a><a href="#gallery">Gallery</a><a href="#find">Find us</a>
+  <a href="https://thadogghouse.nl/shop/" target="_blank" rel="noopener" class="menu__shop">Shop merch ↗</a>
+</div>
+
+<main id="top">
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <canvas id="gl" aria-hidden="true"></canvas>
+    <div class="hero__shade"></div>
+    <div class="hero__content">
+      <p class="hero__kicker reveal-up">Snoop Dogg's flagship · Amsterdam</p>
+      <h1 class="hero__title" aria-label="Tha Dogg House">
+        <span class="line"><span class="split">THA DOGG</span></span>
+        <span class="line"><span class="split">HOUSE</span></span>
+      </h1>
+      <p class="hero__lead reveal-up">Two houses in the heart of the Dam. Death Row blue, Long Beach gold, music every week and a seat at the table for everybody who comes through.</p>
+      <div class="hero__ctas reveal-up">
+        <a class="btn btn--gold magnetic" href="#visit">Plan your visit</a>
+        <a class="btn btn--ghost magnetic" href="#nights">See what's on</a>
+      </div>
+    </div>
+    <div class="hero__scroll"><span>Scroll</span><i></i></div>
+    <div class="seal" aria-hidden="true">
+      <svg viewBox="0 0 200 200"><defs><path id="seal-c" d="M100,100 m-80,0 a80,80 0 1,1 160,0 a80,80 0 1,1 -160,0"/></defs>
+        <circle cx="100" cy="100" r="97" class="seal__ring"/><circle cx="100" cy="100" r="64" class="seal__ring seal__ring--in"/>
+        <g class="seal__spin"><text><textPath href="#seal-c" textLength="500" lengthAdjust="spacing">THA DOGG HOUSE ✦ AMSTERDAM ✦ WEST COAST IN THE DAM ✦</textPath></text></g></svg>
+      <img src="assets/hand-sm.png" alt="">
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      <span>Marnixstraat 333</span><b>✦</b><span>Oudebrugsteeg 26</span><b>✦</b><span>Snoop Dogg Flagship</span><b>✦</b><span>Death Row Records</span><b>✦</b><span>Ladies Night · Wednesdays</span><b>✦</b><span>Breakfast the Dogg way</span><b>✦</b>
+      <span>Marnixstraat 333</span><b>✦</b><span>Oudebrugsteeg 26</span><b>✦</b><span>Snoop Dogg Flagship</span><b>✦</b><span>Death Row Records</span><b>✦</b><span>Ladies Night · Wednesdays</span><b>✦</b><span>Breakfast the Dogg way</span><b>✦</b>
+    </div>
+  </div>
+
+  <!-- MANIFESTO -->
+  <section class="manifesto">
+    <p class="manifesto__text" id="manifesto">From Long Beach to the canals. Tha Dogg House is where the West Coast meets Amsterdam: a flagship store, a lounge, a breakfast spot and a stage for the city's DJs — built for good people and good energy.</p>
+  </section>
+
+  <!-- HOUSES -->
+  <section class="houses" id="houses">
+    <header class="sec-head">
+      <h2 class="sec-title"><span class="split">Two houses.</span><br><span class="split gold">One vibe.</span></h2>
+    </header>
+    <div class="houses__grid">
+      <article class="house tilt">
+        <div class="house__media"><img src="assets/img/DfC64ThkvBC.jpg" alt="Tha Dogg House storefront on Marnixstraat" loading="lazy"></div>
+        <div class="house__body">
+          <span class="house__tag">Flagship</span>
+          <h3>Marnixstraat 333</h3>
+          <p>The full house: official Snoop Dogg &amp; Death Row merch, the neon lounge, breakfast in the morning and DJs on the decks every week.</p>
+          <div class="house__links"><a class="link" href="#find" data-fly="marnix">See it on the map</a><a class="link" href="https://www.google.com/maps/dir/?api=1&amp;destination=Marnixstraat+333,+1016+TC+Amsterdam" target="_blank" rel="noopener">Directions ↗</a></div>
+        </div>
+      </article>
+      <article class="house tilt">
+        <div class="house__media"><img src="assets/img/DeeIKkwHPeL.jpg" alt="Blue neon Snoop Dogg wall inside Tha Dogg House" loading="lazy"></div>
+        <div class="house__body">
+          <span class="house__tag">Old centre</span>
+          <h3>Oudebrugsteeg 26</h3>
+          <p>A few steps from Damrak in the oldest part of the city. Same blue glow, same hospitality, right where Amsterdam began.</p>
+          <div class="house__links"><a class="link" href="#find" data-fly="oude">See it on the map</a><a class="link" href="https://www.google.com/maps/dir/?api=1&amp;destination=Oudebrugsteeg+26,+1012+JP+Amsterdam" target="_blank" rel="noopener">Directions ↗</a></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- INSIDE (reels, horizontal) -->
+  <section class="inside" id="inside">
+    <div class="inside__pin">
+      <div class="inside__intro">
+        <h2 class="sec-title"><span class="split">Inside</span><br><span class="split gold">the house</span></h2>
+        <p>Straight from the floor. Guests, artists and the crew — as it happens on <a class="link" href="https://www.instagram.com/thadogghouse.ams/" target="_blank" rel="noopener">@thadogghouse.ams</a>.</p>
+      </div>
+      <div class="reels" id="reels">
+        <figure class="reel" data-ig="DeGsiQEMak8" data-cursor="Play" tabindex="0" role="button"><video muted loop playsinline preload="none" poster="assets/reels/DeGsiQEMak8.jpg" data-src="assets/reels/DeGsiQEMak8.mp4"></video><span class="reel__play" aria-hidden="true"></span><figcaption>Lucky you</figcaption></figure>
+        <figure class="reel" data-ig="Deum7fbSSf1" data-cursor="Play" tabindex="0" role="button"><video muted loop playsinline preload="none" poster="assets/reels/Deum7fbSSf1.jpg" data-src="assets/reels/Deum7fbSSf1.mp4"></video><span class="reel__play" aria-hidden="true"></span><figcaption>Happy birthday, Snoop</figcaption></figure>
+        <figure class="reel" data-ig="DfC64ThkvBC" data-cursor="Play" tabindex="0" role="button"><video muted loop playsinline preload="none" poster="assets/reels/DfC64ThkvBC.jpg" data-src="assets/reels/DfC64ThkvBC.mp4"></video><span class="reel__play" aria-hidden="true"></span><figcaption>240 KM/H · ADE</figcaption></figure>
+        <figure class="reel" data-ig="DeL8xHdsyFf" data-cursor="Play" tabindex="0" role="button"><video muted loop playsinline preload="none" poster="assets/reels/DeL8xHdsyFf.jpg" data-src="assets/reels/DeL8xHdsyFf.mp4"></video><span class="reel__play" aria-hidden="true"></span><figcaption>Ladies Night · DJ Honey</figcaption></figure>
+        <figure class="reel" data-ig="DfKPs9no58T" data-cursor="Play" tabindex="0" role="button"><video muted loop playsinline preload="none" poster="assets/reels/DfKPs9no58T.jpg" data-src="assets/reels/DfKPs9no58T.mp4"></video><span class="reel__play" aria-hidden="true"></span><figcaption>Honey &amp; Friends</figcaption></figure>
+        <figure class="reel" data-ig="DfPbixRslPT" data-cursor="Play" tabindex="0" role="button"><video muted loop playsinline preload="none" poster="assets/reels/DfPbixRslPT.jpg" data-src="assets/reels/DfPbixRslPT.mp4"></video><span class="reel__play" aria-hidden="true"></span><figcaption>Halloween x HEMPER</figcaption></figure>
+        <figure class="reel" data-ig="DejNFFsI9d4" data-cursor="Play" tabindex="0" role="button"><video muted loop playsinline preload="none" poster="assets/reels/DejNFFsI9d4.jpg" data-src="assets/reels/DejNFFsI9d4.mp4"></video><span class="reel__play" aria-hidden="true"></span><figcaption>When in Dam</figcaption></figure>
+        <figure class="reel" data-ig="DezacipopmY" data-cursor="Play" tabindex="0" role="button"><video muted loop playsinline preload="none" poster="assets/reels/DezacipopmY.jpg" data-src="assets/reels/DezacipopmY.mp4"></video><span class="reel__play" aria-hidden="true"></span><figcaption>First gig at ADE</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- NIGHTS -->
+  <section class="nights" id="nights">
+    <header class="sec-head">
+      <h2 class="sec-title"><span class="split">Nights at</span><br><span class="split gold">the house</span></h2>
+    </header>
+    <article class="weekly tilt">
+      <div class="weekly__media"><img src="assets/img/DeL8xHdsyFf.jpg" alt="DJ Honey on the decks at Tha Dogg House" loading="lazy"></div>
+      <div class="weekly__body">
+        <span class="pill">Every Wednesday</span>
+        <h3>Ladies Night<br>with DJ Honey &amp; Friends</h3>
+        <p>By women, for women — and everybody who loves good energy. The perfect midweek reset at Marnixstraat 333.</p>
+        <p class="next" id="next-ladies" aria-live="polite"></p>
+        <a class="btn btn--gold magnetic" href="https://www.instagram.com/thadogghouse.ams/" target="_blank" rel="noopener">Follow for line-ups</a>
+      </div>
+    </article>
+    <div class="posters">
+      <figure class="poster"><img src="assets/img/Del-5YwINDa.jpg" alt="ADE Thursday with AMW.FM" loading="lazy"><figcaption><b>ADE 2026</b> AMW.FM takeover · 9 hours of house</figcaption></figure>
+      <figure class="poster"><img src="assets/img/DehQHavI8ny.jpg" alt="240 artists and friends" loading="lazy"><figcaption><b>24 Oct</b> 240 Artists &amp; Friends · open decks</figcaption></figure>
+      <figure class="poster"><img src="assets/img/DevIffpRPWN.jpg" alt="Ramiro Brett and Friends" loading="lazy"><figcaption><b>25 Oct</b> Ramiro Brett &amp; Friends</figcaption></figure>
+      <figure class="poster"><img src="assets/img/DfCUlQSssgV.jpg" alt="Halloween session with HEMPER" loading="lazy"><figcaption><b>31 Oct</b> Halloween Sesh x HEMPER</figcaption></figure>
+      <figure class="poster"><img src="assets/img/DfkV9tSsuUo.jpg" alt="Rolling Deep birthday bash" loading="lazy"><figcaption><b>14 Nov</b> Rolling Deep · Amsterdam Takeover</figcaption></figure>
+      <figure class="poster"><img src="assets/img/Df27FwZsdM9.jpg" alt="DJ Honey and Friends every Wednesday" loading="lazy"><figcaption><b>Weekly</b> DJ Honey &amp; Friends</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- BREAKFAST -->
+  <section class="breakfast" id="breakfast">
+    <div class="breakfast__media parallax"><img src="assets/img/DeTSpr0jjsr.jpg" alt="Breakfast at Tha Dogg House" loading="lazy"></div>
+    <div class="breakfast__body">
+      <h2 class="sec-title"><span class="split">Start your day</span><br><span class="split gold">the Dogg way</span></h2>
+      <p>Breakfast is served at Marnixstraat. Fresh coffee, golden croissants, eggs and juice under the blue neon — the calmest seat in the house before the music starts.</p>
+      <a class="link" href="https://maps.google.com/?q=Marnixstraat+333,+1016TC+Amsterdam" target="_blank" rel="noopener">Find us on Marnixstraat ↗</a>
+    </div>
+  </section>
+
+  <!-- MERCH -->
+  <section class="merch">
+    <div class="merch__bg"><img src="assets/img/DebhsYJnArw.jpg" alt="" loading="lazy"></div>
+    <div class="merch__body">
+      <h2 class="sec-title"><span class="split">Official Snoop Dogg</span><br><span class="split gold">&amp; Death Row merch</span></h2>
+      <p>Hoodies, tees, caps and pieces you only find in the house. Shop in store or online.</p>
+      <a class="btn btn--gold magnetic" href="https://thadogghouse.nl/shop/" target="_blank" rel="noopener">Shop the drop ↗</a>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="gallery" id="gallery">
+    <header class="sec-head">
+      <h2 class="sec-title"><span class="split">Pull up.</span><br><span class="split gold">Get in the picture.</span></h2>
+      <a class="link" href="https://www.instagram.com/thadogghouse.ams/" target="_blank" rel="noopener">@thadogghouse.ams ↗</a>
+    </header>
+    <div class="masonry" id="masonry">
+      <img data-cursor="View" tabindex="0" src="assets/img/DfhsflgstHs.jpg" alt="Guests at Tha Dogg House" loading="lazy">
+      <img data-cursor="View" tabindex="0" src="assets/img/De4MiUmEXiw.jpg" alt="Snoop's Angels at ADE" loading="lazy">
+      <img data-cursor="View" tabindex="0" src="assets/img/DfXDHNbM0MD.jpg" alt="Couple at a blue table" loading="lazy">
+      <img data-cursor="View" tabindex="0" src="assets/img/Dd4EiBKMGZM.jpg" alt="Friends in the lounge" loading="lazy">
+      <img data-cursor="View" tabindex="0" src="assets/img/DeWa68AFa6G.jpg" alt="Konshens visiting" loading="lazy">
+      <img data-cursor="View" tabindex="0" src="assets/img/DehQKivsVxW.jpg" alt="Friends at Tha Dogg House" loading="lazy">
+      <img data-cursor="View" tabindex="0" src="assets/img/DepJbp-srgo.jpg" alt="ADE 2026 programme" loading="lazy">
+      <img data-cursor="View" tabindex="0" src="assets/img/Dd9JsIRDKmI.jpg" alt="Guest dropping by" loading="lazy">
+      <img data-cursor="View" tabindex="0" src="assets/img/DfwW8bPsnkM.jpg" alt="Snoop Dogg through the years" loading="lazy">
+      <img data-cursor="View" tabindex="0" src="assets/img/Ddwbx-asidR.jpg" alt="Amenazzy at Tha Dogg House" loading="lazy">
+    </div>
+  </section>
+
+  <!-- FIND (map) -->
+  <section class="find" id="find">
+    <header class="sec-head">
+      <h2 class="sec-title"><span class="split">Find</span> <span class="split gold">the house.</span></h2>
+      <p class="find__sub">Two doors in the old city, 1.4 km apart across the canals. Pick a house and the map flies you there.</p>
+    </header>
+    <div class="find__frame">
+      <div class="find__map" id="map" role="region" aria-label="Map of Amsterdam showing both Tha Dogg House locations" data-cursor="Drag"></div>
+      <div class="find__veil" aria-hidden="true"></div>
+      <aside class="find__panel">
+        <button class="spot is-active" type="button" data-fly="marnix">
+          <span class="spot__pin"><i></i></span>
+          <span class="spot__txt"><b>Marnixstraat 333</b><small>Flagship · merch, lounge, breakfast, DJs</small></span>
+        </button>
+        <button class="spot" type="button" data-fly="oude">
+          <span class="spot__pin"><i></i></span>
+          <span class="spot__txt"><b>Oudebrugsteeg 26</b><small>Old centre · steps from Damrak</small></span>
+        </button>
+        <div class="find__actions">
+          <button class="btn btn--ghost btn--sm" type="button" data-fly="both">Show both</button>
+          <a class="btn btn--gold btn--sm magnetic" id="dir-link" href="https://www.google.com/maps/dir/?api=1&amp;destination=Marnixstraat+333,+1016+TC+Amsterdam" target="_blank" rel="noopener">Directions ↗</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- VISIT -->
+  <section class="visit" id="visit">
+    <div class="visit__media parallax"><img id="visit-img" src="assets/img/exterior.jpg" alt="Tha Dogg House at night" loading="lazy"></div>
+    <div class="visit__body">
+      <h2 class="sec-title"><span class="split">Come</span> <span class="split gold">through.</span></h2>
+      <div class="visit__cols">
+        <div>
+          <h4>Flagship</h4>
+          <p>Marnixstraat 333<br>1016 TC Amsterdam</p>
+          <a class="link" href="https://www.google.com/maps/dir/?api=1&amp;destination=Marnixstraat+333,+1016+TC+Amsterdam" target="_blank" rel="noopener">Directions ↗</a>
+        </div>
+        <div>
+          <h4>Old centre</h4>
+          <p>Oudebrugsteeg 26<br>1012 JP Amsterdam</p>
+          <a class="link" href="https://www.google.com/maps/dir/?api=1&amp;destination=Oudebrugsteeg+26,+1012+JP+Amsterdam" target="_blank" rel="noopener">Directions ↗</a>
+        </div>
+        <div>
+          <h4>Say hi</h4>
+          <p><a class="link" href="mailto:info@thadogghouse.nl">info@thadogghouse.nl</a><br><a class="link" href="https://www.instagram.com/thadogghouse.ams/" target="_blank" rel="noopener">Instagram</a></p>
+          <p class="small">Opening hours and line-ups are posted on Instagram and Google Maps.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <img class="footer__logo" src="assets/logo_a.png" alt="Tha Dogg House">
+  <nav class="footer__links" aria-label="Footer">
+    <a class="link" href="https://www.instagram.com/thadogghouse.ams/" target="_blank" rel="noopener">Instagram</a>
+    <a class="link" href="https://thadogghouse.nl/shop/" target="_blank" rel="noopener">Shop</a>
+    <a class="link" href="mailto:info@thadogghouse.nl">info@thadogghouse.nl</a>
+    <a class="link" href="#top">Back to top ↑</a>
+  </nav>
+  <p class="footer__big">THA DOGG HOUSE</p>
+  <div class="footer__row">
+    <span>© 2026 Tha Dogg House · Amsterdam · 18+ only</span>
+    <span>Concept redesign by Crystal Labs</span>
+  </div>
+</footer>
+
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Media viewer">
+  <div class="lb__bg" data-close></div>
+  <button class="lb__close" type="button" aria-label="Close" data-close><span></span><span></span></button>
+  <button class="lb__nav lb__nav--prev" type="button" aria-label="Previous">‹</button>
+  <figure class="lb__stage"><div class="lb__media" id="lb-media"></div><figcaption class="lb__cap"><span id="lb-cap"></span><a class="link" id="lb-ig" href="#" target="_blank" rel="noopener">Watch on Instagram ↗</a><b id="lb-count"></b></figcaption></figure>
+  <button class="lb__nav lb__nav--next" type="button" aria-label="Next">›</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
+<script type="module" src="main.js"></script>
+</body>
+</html>

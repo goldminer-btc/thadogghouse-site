@@ -1,0 +1,4 @@
+assets/ig
+assets/img/*.png
+.vercel
+*.bak.*
