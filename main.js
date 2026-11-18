@@ -329,7 +329,7 @@ const SMOKE_FS = `
     c += (hash(gl_FragCoord.xy + fract(uTime)) - .5) / 160.;               // dither, no banding
     gl_FragColor = vec4(c, a);
   }`;
-if (!reduce) {
+{   // shown for everyone: it only moves when the visitor scrolls; reduced-motion visitors get a calmer drift
   const sCv = document.createElement('canvas');
   sCv.className = 'smoke'; sCv.setAttribute('aria-hidden', 'true');
   document.body.appendChild(sCv);
@@ -364,7 +364,7 @@ if (!reduce) {
       sU.uThick.value = Math.sin(Math.PI * cur);
       sU.uRise.value = cur * 2.4;
       sU.uVel.value += (vel - sU.uVel.value) * .05; vel *= .94;
-      sU.uTime.value = sClock.getElapsedTime();
+      sU.uTime.value = sClock.getElapsedTime() * (reduce ? .35 : 1);
       sU.uMouse.value.lerp(target, .05);
       sr.render(sScene, sCam);
     });
